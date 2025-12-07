@@ -1,11 +1,18 @@
 from Bio import SeqIO
 from Bio.Seq import Seq
 from Bio.SeqRecord import SeqRecord
+import sys
+import os
 
 #File Set Up
-##Input and Output files
+#Input and Output files
 input_file = r"c:/Users/gt25963/meat_species/samples/p3_COI/FINAL_comb_all_seq.fasta"
 output_file = "FINAL_AA_translated_seqs.fasta"
+
+#Error Handling: Check if file exists
+if not os.path.exists(input_file):
+    print(f"ERROR: File not found: {input_file}")
+    sys.exit(1)
 
 #Load in the DNA sequences from the FASTA file
 print(f"Reading: {input_file}")
@@ -18,6 +25,10 @@ aa_sequences = []
 #Translate each sequence
 for record in sequences:
     dna_seq = record.seq #Nucleotide sequence from the FASTA record
+    #Error handling: check if sequence is empty
+    if len(dna_seq) == 0:
+        print(f"WARNING: Sequence '{record.id}' is empty")
+        continue
     best_orf = "" #Will store the longest ORF found across all frames
     best_frame = None #Will store which frame (0,1,2) contains the longest ORF
     #Translate sequence in all three forward reading frames
@@ -32,6 +43,10 @@ for record in sequences:
         if len(longest_in_frame) > len(best_orf):
             best_orf = longest_in_frame
             best_frame = frame
+    #Error handling: check if translation produced any results
+    if len(best_orf) == 0:
+        print(f"WARNING: No valid ORF found for '{record.id}'")
+        continue
     #Convert the longest ORF string back into Seq object
     best_protein = Seq(best_orf)
     #Create a new SeqRecord containing the longest ORF for this sequence
@@ -48,10 +63,15 @@ for record in sequences:
     )
 
     aa_sequences.append(aa_record) #Add to output list
-
+    
 #Print the progress for each sequence 
     print(f"{record.id:25s} {len(dna_seq):5d} bp -> {len(best_protein):4d} aa (frame {best_frame})")
 print()
+
+#Error Handling
+if len(aa_sequences) == 0:
+    print("ERROR: No sequences could be translated!")
+    sys.exit(1) 
 
 #Write all translated longest-ORF sequences to a FASTA file
 SeqIO.write(aa_sequences, output_file, "fasta")
