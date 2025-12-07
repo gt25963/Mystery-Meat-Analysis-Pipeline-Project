@@ -13,7 +13,7 @@ sequences = list(SeqIO.parse(input_file, "fasta"))
 print(f"Loaded {len(sequences)} sequences")
 print()
 
-#List to store oputput amino-acid SeqRecord objects
+#List to store output amino-acid SeqRecord objects
 aa_sequences = []
 #Translate each sequence
 for record in sequences:
@@ -22,7 +22,7 @@ for record in sequences:
     best_frame = None #Will store which frame (0,1,2) contains the longest ORF
     #Translate sequence in all three forward reading frames
     for frame in range(3):
-        #Translate starting at this frame using vertebrate mitochondiral code (table=2). Keeping stop codons (to_stop=Flase) as to identify ORFs
+        #Translate starting at this frame using vertebrate mitochondrial code (table=2). Keeping stop codons (to_stop=False) as to identify ORFs
         protein = dna_seq[frame:].translate(table=2, to_stop=False) 
         #Split translation into fragments separated by stop codons ("*"). Each fragment is a potential ORF
         fragments = str(protein).split("*")
@@ -32,7 +32,7 @@ for record in sequences:
         if len(longest_in_frame) > len(best_orf):
             best_orf = longest_in_frame
             best_frame = frame
-    #Convert the longest ORF strong back into Seq object
+    #Convert the longest ORF string back into Seq object
     best_protein = Seq(best_orf)
     #Create a new SeqRecord containing the longest ORF for this sequence
     aa_record = SeqRecord(
