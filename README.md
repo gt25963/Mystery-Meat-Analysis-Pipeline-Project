@@ -50,14 +50,14 @@ Additional software required:
 For FASTQC analysis:
 
 ```bash
-cd samples/p1_scripts/
+cd ../p1_scripts
 bash concat_FASTQC.sh
 ```
 
 For BLAST searches:
 
 ```bash
-cd samples/p1_scripts/
+cd ../p1_scripts
 bash concatA_fastq.sh
 ```
 
@@ -75,8 +75,15 @@ This pipeline uses DNA barcoding with the COI gene, a standard for animal specie
 Combine all reference sequences:
 
 ```bash
-cd ../p2_COI/
+cd ../p2_COI
 bash concat_ref_seqs.sh
+```
+
+Combine all reference sequences and mystery samples: 
+
+```bash
+cd ../samples
+cat p1_scripts/sampleA_complete.fasta p1_scripts/sampleB_complete.fasta p1_scripts/sampleC_complete.fasta p1_scripts/sampleD_complete.fasta p2_COI/FINAL_all_ref_sequences.fasta > p3_COI/FINAL_comb_all_seq.fasta
 ```
 
 ### Part 3: Translate DNA to Amino Acids and Align the Sequences
@@ -84,7 +91,7 @@ bash concat_ref_seqs.sh
 Translate DNA sequences to amino acids using the longest ORF method:
 
 ```bash
-cd ../p3_COI/
+cd ../p3_COI
 python seq_2_AA.py
 ```
 
@@ -92,8 +99,9 @@ Align translated sequences using Clustal Omega on the EBI web interface.
 
 ## Output Files
 
-* `sampleA.fastq`, `sampleB.fastq`, `sampleC.fastq`, `sampleD.fastq` - Concatenated sample sequences
+* `sampleA.fastq`, `sampleB.fastq`, `sampleC.fastq`, `sampleD.fastq` - Concatenated sample sequences for FastQC analysis
+* `sampleA_complete.fasta`, `sampleB_complete.fasta`, `sampleC_complete.fasta`, `sampleD_complete.fasta`, - Concatenated samples as fasta files
 * `FINAL_all_ref_sequences.fasta` - Combined reference sequences
 * `FINAL_AA_translated_seqs.fasta` - Translated protein sequences
 * `FINAL_Alignment.fa` - Multiple sequence alignment
-* `FINAL_alignment_image.png` - Alignment visualization
+* `FINAL_alignment_image.png`, `FINAL_ALIGNMENT_JALVIEW.aln` - Alignment visualization
