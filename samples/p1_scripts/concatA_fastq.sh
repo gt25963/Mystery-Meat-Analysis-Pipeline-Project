@@ -14,6 +14,16 @@ rm -f "$output"
 ##Print where I am, to check if in the correct directory
 echo "Current directory: $(pwd)"
 echo ""
+
+#Error Handling: check if all required FASTQ files exist
+for file in ${sample_name}_part1.FASTQ ${sample_name}_part2.FASTQ ${sample_name}_part3.FASTQ
+do
+    if [ ! -f "$file" ]; then
+        echo "ERROR: Missing required file: $file" >&2
+        exit 1
+    fi
+done
+
 echo "Concatenating FASTQ files for ${sample_name}"
 
 #Concatenate Sequences Together
@@ -54,5 +64,11 @@ echo "${sample_name}: ${total_bases} bases"
 echo ">${sample_name}" > "$output"
 ## >> Puts the DNA sequence on the next line
 echo "$full_sequence" >> "$output"
+
+#Error Handling: verify output file was created successfully
+if [ ! -s "$output" ]; then
+    echo "ERROR: Output file was not created or is empty" >&2
+    exit 1
+fi
 
 echo "Sequence written to $output"
