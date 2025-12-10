@@ -68,7 +68,7 @@ for record in sequences:
     print(f"{record.id:25s} {len(dna_seq):5d} bp -> {len(best_protein):4d} aa (frame {best_frame})")
 print()
 
-#Error Handling
+#Error Handling: check if any sequences have been translated
 if len(aa_sequences) == 0:
     print("ERROR: No sequences could be translated!")
     sys.exit(1) 
